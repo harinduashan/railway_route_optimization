@@ -14,21 +14,21 @@ mean_fitness = []
 std_fitness = []
 
 
-def readFile():
+def read_file():
     with open('data/Dataset-GA-normalized.csv', newline='') as f:
         reader = csv.reader(f)
         data = list(reader)
     return data
 
 
-def genotypeToPhenotype(individual):
+def genotype_to_phenotype(individual):
     phenotype_array = []
     for start_index in range(10):
         phenotype_array.append(int((individual[(start_index * 8):(start_index * 8 + 7)]), 2))
     print(phenotype_array)
 
 
-def fitnessFunction(individual):
+def fitness_function(individual):
     fitness = 0
     last_x = int(data[0][0])
     last_y = int(data[0][1])
@@ -85,8 +85,8 @@ def main():
 
     print("Start of evolution")
 
-    fitnesses = list(map(toolbox.evaluate, pop))
-    for ind, fit in zip(pop, fitnesses):
+    _fitnesses = list(map(toolbox.evaluate, pop))
+    for ind, fit in zip(pop, _fitnesses):
         ind.fitness.values = fit
 
     print("  Evaluated %i individuals" % len(pop))
@@ -129,8 +129,8 @@ def main():
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
-        for ind, fit in zip(invalid_ind, fitnesses):
+        _fitnesses = map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, _fitnesses):
             ind.fitness.values = fit
 
         print("  Evaluated %i individuals" % len(invalid_ind))
@@ -161,7 +161,7 @@ def main():
 
 
 if __name__ == "__main__":
-    data = readFile()
+    data = read_file()
 
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 10)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-    toolbox.register("evaluate", fitnessFunction)
+    toolbox.register("evaluate", fitness_function)
     toolbox.register("mate", tools.cxTwoPoint)
     toolbox.register("mutate", tools.mutFlipBit, indpb=0.01)
     toolbox.register("select", tools.selTournament, tournsize=3)
